@@ -1,8 +1,13 @@
 package me.iksad.optimizer.repository;
 
+import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import me.iksad.optimizer.dto.ReviewResponse;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 import static me.iksad.optimizer.entity.QReview.review;
 
@@ -20,5 +25,20 @@ public class ReviewRepositoryImpl implements RatingRepository {
                 .where(review.item.id.eq(itemId))
 
                 .fetchFirst();
+    }
+
+    @Override
+    public List<ReviewResponse> findAllAsJustRating() {
+        ConstructorExpression<ReviewResponse> reviewProjection = Projections.constructor(
+                ReviewResponse.class,
+                review.id.as("id"),
+                review.rating.as("rating")
+        );
+
+        return factory
+                .select(reviewProjection)
+                .from(review)
+
+                .fetch();
     }
 }
