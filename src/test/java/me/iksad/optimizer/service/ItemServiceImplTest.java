@@ -44,7 +44,22 @@ class ItemServiceImplTest {
 
         // then
         log.info(String.valueOf(runningTime));
-        // 1403 ms
+    }
+
+    @Test
+    void record_time_readByIdWithCaching() throws Throwable {
+        // given
+        int number_of_try = 1000;
+        Long id = 100L;
+
+        // when
+        long runningTime = StressTestUtil.multipleCall(
+                number_of_try,
+                () -> itemService.readByIdWithCaching(id)
+        );
+
+        // then
+        log.info(String.valueOf(runningTime));
     }
 
     @Test
